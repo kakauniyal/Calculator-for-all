@@ -26,7 +26,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden; /* Prevent scrollbars on Android */
+      overflow: hidden;
     }
     .container {
       background: white;
@@ -47,11 +47,17 @@
     .notes {
       background: linear-gradient(135deg,#ff6b6b 0%,#ee5a24 100%);
       border-radius: 8px;
-      padding: 10px;
+      padding: 12px;
       margin-bottom: 14px;
       color: white;
-      font-weight: 600;
       font-size: 14px;
+      text-align: left;
+    }
+    .notes p {
+      margin: 6px 0;
+      font-weight: 700;
+      font-style: italic;
+      color: #ffff99; /* हल्का पीला */
     }
     .input-group { margin-bottom: 14px; text-align: left; }
     label { display: block; margin-bottom: 6px; color: #333; font-weight: 700; font-size: 14px; }
@@ -101,8 +107,12 @@
   <div class="container">
     <h2>🔧 Tool Overhang Calculator</h2>
 
-    <div class="notes"><strong>⚠️ This is theory only — check physically before use</strong></div>
-    <div class="notes"><strong>⚠️ Do not use with boring bar</strong></div>
+    <!-- Combined Warning Box -->
+    <div class="notes">
+      <p>⚠️ This is theory only — check physically before use</p>
+      <p>⚠️ Do not use with boring bar</p>
+      <p>⚠️ रैम पर लगा अटैचमेंट रैम के फेस के पैरेलल या आगे होना चाहिए। पीछे होने की स्थिति में यह फॉर्मूला उपयोग न करें।</p>
+    </div>
 
     <div class="input-group">
       <label for="ramSize">RAM Size:</label>
