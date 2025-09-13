@@ -1,295 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tool Overhang Calculator</title>
+
+  <!-- Theme color for Android -->
+  <meta name="theme-color" content="#7DA27D">
+
+  <!-- If you later want a web app manifest, host a manifest.json and uncomment:
+       <link rel="manifest" href="manifest.json">
+       For AppGeyser packaging it's optional. -->
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Rajdhani:wght@500&display=swap');
-
+    /* Use system fonts for better compatibility inside wrappers/webviews */
+    :root {
+      --bg-green: #7DA27D;
+      --blue: #007bff;
+      --blue-dark: #004a99;
+      --danger1: #ff4757;
+      --danger2: #c44569;
+    }
+    html,body{height:100%;margin:0;padding:0}
     body {
-      font-family: 'Rajdhani', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background-color: #7DA27D; /* Machine Green */
-      border: 8px double #888; /* Gray border */
-      box-sizing: border-box;
-      padding: 20px;
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+      background-color: var(--bg-green);
+      box-sizing:border-box;
+      padding:16px;
     }
-
     .container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      width: 95%;
-      max-width: 500px;
+      background:white;
+      padding:22px;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.18);
+      text-align:center;
+      width:95%;
+      max-width:520px;
     }
-
-    h2 {
-      margin-top: 0;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 28px;
-      color: #2c3e50;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      letter-spacing: 1.5px;
+    h2{
+      margin:0 0 12px 0;
+      font-size:24px;
+      letter-spacing:1px;
+      color:#2c3e50;
     }
-
-    .notes {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-      border: 2px solid rgba(255, 107, 107, 0.5);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 20px;
-      text-align: center;
-      font-size: 16px;
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
-      animation: warningPulse 2s ease-in-out infinite;
+    .notes{
+      background:linear-gradient(135deg,#ff6b6b 0%,#ee5a24 100%);
+      border-radius:8px;
+      padding:10px;
+      margin-bottom:14px;
+      color:white;
+      font-weight:600;
+      font-size:14px;
     }
-
-    @keyframes warningPulse {
-      0%, 100% { box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3); }
-      50% { box-shadow: 0 8px 35px rgba(255, 107, 107, 0.5); }
+    .input-group{ margin-bottom:14px; text-align:left;}
+    label{ display:block; margin-bottom:6px; color:#333; font-weight:700; font-size:14px;}
+    input[type="number"]{
+      width:100%;
+      padding:10px;
+      box-sizing:border-box;
+      border:2px solid #1565c0;
+      border-radius:6px;
+      font-size:16px;
+      color:#0d47a1;
+      font-weight:700;
     }
-
-    .notes p {
-      margin: 6px 0;
-      text-transform: uppercase;
-      font-style: italic;
+    button{
+      width:100%;
+      padding:12px;
+      background:var(--blue);
+      color:#fff;
+      border:0;
+      border-radius:8px;
+      font-size:18px;
+      cursor:pointer;
+      font-weight:700;
     }
-
-    .input-group {
-      margin-bottom: 20px;
-      text-align: left;
+    button:active{ transform:scale(.998) }
+    #result{
+      margin-top:16px;
+      font-size:18px;
+      font-weight:700;
+      color:#333;
+      padding:12px;
+      border-radius:8px;
+      transition:all .2s ease;
     }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      color: #333;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      box-sizing: border-box;
-      border: 2px solid #1565c0;
-      border-radius: 6px;
-      font-size: 18px;
-      color: #0d47a1;
-      font-weight: bold;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 20px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #004a99;
-      transform: scale(1.05);
-    }
-
-    #result {
-      margin-top: 20px;
-      font-size: 22px;
-      font-weight: bold;
-      color: #333;
-      padding: 15px;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .credits {
-      margin-top: 25px;
-      font-size: 12px;
-      font-weight: bold;
-      text-transform: lowercase;
-      color: #444;
-    }
+    .credits{ margin-top:16px; font-size:12px; color:#444; text-transform:lowercase; font-weight:700;}
+    /* simple error/ok styles via JS */
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>🔧 Tool Overhang Calculator</h2>
 
-<div class="container">
-  <h2>🔧 Tool Overhang Calculator</h2>
+    <div class="notes"><strong>⚠️ This is theory only — check physically before use</strong></div>
 
-  <!-- Important Notes -->
-  <div class="notes">
-    <p><b><i>⚠️ This is only theory based - check physically before use</i></b></p>
+    <div class="input-group">
+      <label for="ramSize">RAM Size:</label>
+      <input type="number" id="ramSize" placeholder="Enter RAM Size (e.g., 450)" step="0.01" inputmode="decimal">
+    </div>
+
+    <div class="input-group">
+      <label for="safeDia">Safe Diameter:</label>
+      <input type="number" id="safeDia" placeholder="Enter Safe Diameter" step="0.01" inputmode="decimal">
+    </div>
+
+    <div class="input-group">
+      <label for="endDia">End Diameter:</label>
+      <input type="number" id="endDia" placeholder="Enter End Diameter" step="0.01" inputmode="decimal">
+    </div>
+
+    <button id="calcBtn" type="button">Calculate Tool Overhang</button>
+    <p id="result">Result will appear here</p>
+
+    <p class="credits">Enhanced formula with dynamic RAM size validation</p>
   </div>
 
-  <div class="input-group">
-    <label for="ramSize">RAM Size:</label>
-    <input type="number" id="ramSize" placeholder="Enter RAM Size (e.g., 450)" step="0.01">
-  </div>
+  <script>
+    // Keep original validation + calculation logic (adapted to event handlers)
+    const ramEl = document.getElementById('ramSize');
+    const safeEl = document.getElementById('safeDia');
+    const endEl = document.getElementById('endDia');
+    const resultEl = document.getElementById('result');
+    const calcBtn = document.getElementById('calcBtn');
 
-  <div class="input-group">
-    <label for="safeDia">Safe Diameter:</label>
-    <input type="number" id="safeDia" placeholder="Enter Safe Diameter" step="0.01">
-  </div>
-  
-  <div class="input-group">
-    <label for="endDia">End Diameter:</label>
-    <input type="number" id="endDia" placeholder="Enter End Diameter" step="0.01">
-  </div>
-  
-  <button onclick="calculateOverhang()">Calculate Tool Overhang</button>
-  <p id="result">Result will appear here</p>
+    safeEl.addEventListener('input', validateSafeDia);
+    endEl.addEventListener('input', validateEndDia);
+    calcBtn.addEventListener('click', calculateOverhang);
 
-  <!-- Credits Line -->
-  <p class="credits">
-    Enhanced formula with dynamic RAM size validation
-  </p>
-</div>
-
-<script>
-  // Add real-time validation for Safe Dia
-  document.getElementById('safeDia').addEventListener('input', function() {
-    validateSafeDia();
-  });
-
-  // Add real-time validation for End Dia
-  document.getElementById('endDia').addEventListener('input', function() {
-    validateEndDia();
-  });
-
-  function validateSafeDia() {
-    const ramSize = parseFloat(document.getElementById('ramSize').value);
-    const safeDia = parseFloat(document.getElementById('safeDia').value);
-    
-    if (!isNaN(ramSize) && !isNaN(safeDia)) {
-      // Calculate hypotenuse of square RAM: √(RAM² + RAM²) = RAM√2
-      const minSafeDia = ramSize * Math.sqrt(2);
-      if (safeDia < minSafeDia) {
-        showResult(`ERROR: Safe Dia must be at least ${minSafeDia.toFixed(2)} (hypotenuse of RAM ${ramSize})`, "red");
-        return false;
+    function showResult(message, type){
+      resultEl.textContent = message;
+      if(type === 'error'){
+        resultEl.style.background = 'linear-gradient(135deg, #ff4757 0%, #c44569 100%)';
+        resultEl.style.color = '#fff';
+        resultEl.style.boxShadow = '0 6px 18px rgba(255,71,87,0.25)';
+        resultEl.style.border = '1px solid rgba(255,255,255,0.08)';
+      } else if(type === 'ok'){
+        resultEl.style.background = 'linear-gradient(135deg, #2ed573 0%, #17c0eb 100%)';
+        resultEl.style.color = '#fff';
+        resultEl.style.boxShadow = '0 6px 18px rgba(46,213,115,0.18)';
+        resultEl.style.border = '1px solid rgba(255,255,255,0.06)';
       } else {
-        clearResult();
+        resultEl.style.background = '';
+        resultEl.style.color = '#333';
+        resultEl.style.boxShadow = '';
+        resultEl.style.border = '';
       }
     }
-    return true;
-  }
 
-  function validateEndDia() {
-    const safeDia = parseFloat(document.getElementById('safeDia').value);
-    const endDia = parseFloat(document.getElementById('endDia').value);
-    
-    if (!isNaN(safeDia) && !isNaN(endDia)) {
-      if (endDia <= safeDia) {
-        showResult("ERROR: End Dia must be greater than Safe Dia.", "red");
-        return false;
+    function clearResult(){
+      showResult('Result will appear here', '');
+    }
+
+    function validateSafeDia(){
+      const ramSize = parseFloat(ramEl.value);
+      const safeDia = parseFloat(safeEl.value);
+      if (!isNaN(ramSize) && !isNaN(safeDia)){
+        const minSafeDia = ramSize * Math.SQRT2;
+        if (safeDia < minSafeDia){
+          showResult(`ERROR: Safe Dia must be at least ${minSafeDia.toFixed(2)} (hypotenuse of RAM ${ramSize})`, 'error');
+          return false;
+        } else {
+          clearResult();
+        }
+      }
+      return true;
+    }
+
+    function validateEndDia(){
+      const safeDia = parseFloat(safeEl.value);
+      const endDia = parseFloat(endEl.value);
+      if (!isNaN(safeDia) && !isNaN(endDia)){
+        if (endDia <= safeDia){
+          showResult("ERROR: End Dia must be greater than Safe Dia.", 'error');
+          return false;
+        } else {
+          clearResult();
+        }
+      }
+      return true;
+    }
+
+    function calculateOverhang(){
+      const ramSize = parseFloat(ramEl.value);
+      const safeDia = parseFloat(safeEl.value);
+      const endDia = parseFloat(endEl.value);
+
+      if (isNaN(ramSize) || isNaN(safeDia) || isNaN(endDia)){
+        showResult("ERROR: Please enter valid numbers for all fields.", 'error');
+        return;
+      }
+
+      const minSafeDia = ramSize * Math.SQRT2;
+      if (safeDia < minSafeDia){
+        showResult(`ERROR: Safe Dia must be at least ${minSafeDia.toFixed(2)} (hypotenuse of RAM ${ramSize})`, 'error');
+        return;
+      }
+      if (endDia <= safeDia){
+        showResult("ERROR: End Dia must be greater than Safe Dia.", 'error');
+        return;
+      }
+
+      const halfRam = ramSize / 2;
+      const constant = halfRam * halfRam;
+      const a = safeDia / 2;
+      const a_squared = a * a;
+      const result_minus_constant = a_squared - constant;
+
+      if (result_minus_constant < 0){
+        showResult("ERROR: INVALID SAFE DIA CALCULATION.", 'error');
+        return;
+      }
+
+      const squareRootResult = Math.sqrt(result_minus_constant);
+      const finalCalculation = a - squareRootResult;
+
+      const endHalf = endDia / 2;
+      const safeHalf = safeDia / 2;
+      const subtractionResult = endHalf - safeHalf;
+
+      const grandTotal = finalCalculation + subtractionResult;
+
+      if (grandTotal < 0){
+        showResult("ERROR: PLEASE INPUT CORRECT SAFE DIA AND END DIA.", 'error');
       } else {
-        clearResult();
+        showResult("TOTAL TOOL OVERHANG INCLUDING CASSETTE: " + grandTotal.toFixed(2), 'ok');
       }
     }
-    return true;
-  }
 
-  function calculateOverhang() {
-    // Get input values
-    const ramSize = parseFloat(document.getElementById('ramSize').value);
-    const safeDia = parseFloat(document.getElementById('safeDia').value);
-    const endDia = parseFloat(document.getElementById('endDia').value);
-
-    // Validate inputs
-    if (isNaN(ramSize) || isNaN(safeDia) || isNaN(endDia)) {
-      showResult("ERROR: Please enter valid numbers for all fields.", "red");
-      return;
-    }
-
-    // Calculate minimum safe diameter as hypotenuse of square RAM: √(RAM² + RAM²) = RAM√2
-    const minSafeDia = ramSize * Math.sqrt(2);
-    
-    // Validate Safe Dia is not lower than minimum required
-    if (safeDia < minSafeDia) {
-      showResult(`ERROR: Safe Dia must be at least ${minSafeDia.toFixed(2)} (hypotenuse of RAM ${ramSize})`, "red");
-      return;
-    }
-
-    // Validate End Dia is greater than Safe Dia
-    if (endDia <= safeDia) {
-      showResult("ERROR: End Dia must be greater than Safe Dia.", "red");
-      return;
-    }
-
-    // Calculate constant based on RAM size (RAM size / 2)²
-    const halfRam = ramSize / 2;
-    const constant = halfRam * halfRam;
-
-    const a = safeDia / 2;
-    const a_squared = a * a;
-    const result_minus_constant = a_squared - constant;
-
-    if (result_minus_constant < 0) {
-      showResult("ERROR: INVALID SAFE DIA CALCULATION.", "red");
-      return;
-    }
-
-    const squareRootResult = Math.sqrt(result_minus_constant);
-    const finalCalculation = a - squareRootResult;
-
-    const endHalf = endDia / 2;
-    const safeHalf = safeDia / 2;
-    const subtractionResult = endHalf - safeHalf;
-
-    const grandTotal = finalCalculation + subtractionResult;
-
-    if (grandTotal < 0) {
-      showResult("ERROR: PLEASE INPUT CORRECT SAFE DIA AND END DIA.", "red");
-    } else {
-      showResult("TOTAL TOOL OVERHANG INCLUDING CASSETTE: " + grandTotal.toFixed(2), "green");
-    }
-  }
-
-  function showResult(message, color) {
-    const resultDiv = document.getElementById('result');
-    resultDiv.textContent = message;
-    
-    if (color === 'red') {
-      resultDiv.style.background = 'linear-gradient(135deg, #ff4757 0%, #c44569 100%)';
-      resultDiv.style.color = 'white';
-      resultDiv.style.boxShadow = '0 6px 20px rgba(255, 71, 87, 0.4)';
-      resultDiv.style.border = '2px solid rgba(255, 71, 87, 0.6)';
-    } else if (color === 'green') {
-      resultDiv.style.background = 'linear-gradient(135deg, #2ed573 0%, #17c0eb 100%)';
-      resultDiv.style.color = 'white';
-      resultDiv.style.boxShadow = '0 6px 20px rgba(46, 213, 115, 0.4)';
-      resultDiv.style.border = '2px solid rgba(46, 213, 115, 0.6)';
-    }
-  }
-
-  function clearResult() {
-    const resultDiv = document.getElementById('result');
-    resultDiv.textContent = 'Result will appear here';
-    resultDiv.style.background = '';
-    resultDiv.style.color = '#333';
-    resultDiv.style.boxShadow = '';
-    resultDiv.style.border = '';
-  }
-
-  // Allow Enter key to calculate
-  document.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      calculateOverhang();
-    }
-  });
-</script>
-
+    // allow enter to calculate on mobile keyboards
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') calculateOverhang();
+    });
+  </script>
 </body>
 </html>
