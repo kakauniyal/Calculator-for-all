@@ -1,4 +1,4 @@
-const CACHE_NAME = 'overhang-calc-v1';
+const CACHE_NAME = 'tool-calc-v1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -7,7 +7,7 @@ const ASSETS_TO_CACHE = [
   './icon-512.png'
 ];
 
-// Cache core assets on install
+// Install Event: Cache all critical files
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -17,23 +17,35 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Clean up old caches
+// Activate Event: Clear older caches if CACHE_NAME changes
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
       );
     })
   );
   self.clients.claim();
 });
 
-// Serve cached content when offline
+// Fetch Event: Serve cached assets offline, fetch from network if not cached
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request).catch(() => {
+        // Fallback to index if offline navigation happens
+        if (event.request.mode === 'navigate') {
+          return caches.match('./index.html');
+        }
+      });
     })
   );
 });
