@@ -1,7 +1,7 @@
 {
   "name": "Tool Overhang Calculator",
   "short_name": "OverhangCalc",
-  "start_url": "/calculator/app/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#6A8B5D",
   "theme_color": "#0984e3",
