@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Tool Overhang Calculator</title>
 
-  <!-- PWA manifest -->
-  <link rel="manifest" href="/manifest.json">
+  <!-- PWA Settings -->
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0984e3">
+  <link rel="apple-touch-icon" href="./icon-192.png">
 
   <style>
     :root {
@@ -20,7 +21,7 @@
     }
     body {
       margin: 0;
-      background: #6A8B5D; /* ✅ Machine wala green */
+      background: #6A8B5D;
       font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       justify-content: center;
@@ -79,6 +80,7 @@
       color: #0d47a1;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
       transition: all 0.2s ease;
+      box-sizing: border-box;
     }
     input[type="number"]:focus {
       border-color: #17c0eb;
@@ -129,7 +131,7 @@
     <div class="notes">
       <p>⚠️ <b><i>This is theory only — check physically before use</i></b></p>
       <p>⚠️ <b><i>Do not use with boring bar</i></b></p>
-      <p>⚠️ <b><i>रैम पर लगा अटैचमेंट रैम के फेस के पैरेलल या आगे होना चाहिए। पीछे हो[...]</i></b></p>
+      <p>⚠️ <b><i>रैम पर लगा अटैचमेंट रैम के फेस के पैरेलल या आगे होना चाहिए।</i></b></p>
     </div>
 
     <div class="input-group">
@@ -262,15 +264,17 @@
     document.addEventListener('keydown', function(e){
       if (e.key === 'Enter') calculateOverhang();
     });
-  </script>
 
-  <!-- Register service worker for PWA install/offline support -->
-  <script>
+    // PWA Service Worker Registration using relative path
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js')
-          .then(function(reg) { console.log('Service Worker registered:', reg); })
-          .catch(function(err) { console.error('SW registration failed:', err); });
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            console.log('PWA Service Worker registered:', reg.scope);
+          })
+          .catch((err) => {
+            console.error('Service Worker registration failed:', err);
+          });
       });
     }
   </script>
