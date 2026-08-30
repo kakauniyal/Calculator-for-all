@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Tool Overhang Calculator</title>
 
+  <!-- PWA manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0984e3">
+
   <style>
     :root {
       --blue: #007bff;
@@ -125,7 +129,7 @@
     <div class="notes">
       <p>⚠️ <b><i>This is theory only — check physically before use</i></b></p>
       <p>⚠️ <b><i>Do not use with boring bar</i></b></p>
-      <p>⚠️ <b><i>रैम पर लगा अटैचमेंट रैम के फेस के पैरेलल या आगे होना चाहिए। पीछे होने की स्थिति में यह फॉर्मूला उपयोग न करें।</i></b></p>
+      <p>⚠️ <b><i>रैम पर लगा अटैचमेंट रैम के फेस के पैरेलल या आगे होना चाहिए। पीछे हो[...]</i></b></p>
     </div>
 
     <div class="input-group">
@@ -258,6 +262,17 @@
     document.addEventListener('keydown', function(e){
       if (e.key === 'Enter') calculateOverhang();
     });
+  </script>
+
+  <!-- Register service worker for PWA install/offline support -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(reg) { console.log('Service Worker registered:', reg); })
+          .catch(function(err) { console.error('SW registration failed:', err); });
+      });
+    }
   </script>
 </body>
 </html>
